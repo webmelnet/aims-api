@@ -24,19 +24,7 @@ class UserController extends Controller
         $users = User::whereHas('roles', function ($query) use ($roleNames) {
             $query->whereIn('name', $roleNames);
         })
-            ->with(['roles', 'paintJobAssignments'])
-            ->withCount([
-                'paintJobAssignments as assigned_active_jobs_count' => function ($query) {
-                    $query->whereHas('job', function ($jobQuery) {
-                        $jobQuery->whereNotIn('status', ['Completed', 'Rejected']);
-                    });
-                },
-                'paintJobAssignments as assigned_closed_jobs_count' => function ($query) {
-                    $query->whereHas('job', function ($jobQuery) {
-                        $jobQuery->whereIn('status', ['Completed', 'Rejected']);
-                    });
-                }
-            ])
+            ->with(['roles'])
             ->get();
 
         $usersWithRoles = $users->map(function ($user) {
