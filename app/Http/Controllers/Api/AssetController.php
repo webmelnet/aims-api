@@ -344,8 +344,8 @@ class AssetController extends Controller
         }
 
         $history = [
-            'assignments' => $asset->assignments()->with(['assignedUser', 'assignedByUser'])->orderBy('created_at', 'desc')->get(),
-            'transfers' => $asset->transfers()->with(['fromUser', 'toUser', 'transferredByUser'])->orderBy('created_at', 'desc')->get(),
+            'assignments' => $asset->assignments()->with(['assignedUser', 'assignedByUser', 'location', 'department'])->orderBy('created_at', 'desc')->get(),
+            'transfers' => $asset->transfers()->with(['fromUser', 'toUser', 'transferredByUser', 'fromLocation', 'toLocation', 'fromDepartment', 'toDepartment'])->orderBy('created_at', 'desc')->get(),
             'maintenances' => $asset->maintenances()->with(['performer', 'vendor'])->orderBy('created_at', 'desc')->get(),
             'checkouts' => $asset->checkouts()->with(['user', 'checkedOutByUser', 'checkedInByUser'])->orderBy('created_at', 'desc')->get(),
         ];
