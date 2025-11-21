@@ -10,6 +10,11 @@ use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\Api\LocationController;
 use App\Http\Controllers\Api\VendorController;
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\AssetAssignmentController;
+use App\Http\Controllers\Api\AssetTransferController;
+use App\Http\Controllers\Api\AssetMaintenanceController;
+use App\Http\Controllers\Api\AssetCheckoutController;
+use App\Http\Controllers\Api\AuditLogController;
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     $user = $request->user();
@@ -64,5 +69,67 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Vendors
     Route::apiResource('vendors', VendorController::class);
+
+    // Asset Assignments
+    Route::prefix('asset-assignments')->group(function () {
+        Route::get('/', [AssetAssignmentController::class, 'index']);
+        Route::post('/', [AssetAssignmentController::class, 'store']);
+        Route::get('/statistics', [AssetAssignmentController::class, 'statistics']);
+        Route::get('/user/{userId}', [AssetAssignmentController::class, 'userAssignments']);
+        Route::get('/{id}', [AssetAssignmentController::class, 'show']);
+        Route::post('/{id}/return', [AssetAssignmentController::class, 'return']);
+    });
+
+    // Asset Transfers
+    Route::prefix('asset-transfers')->group(function () {
+        Route::get('/', [AssetTransferController::class, 'index']);
+        Route::post('/', [AssetTransferController::class, 'store']);
+        Route::get('/statistics', [AssetTransferController::class, 'statistics']);
+        Route::get('/{id}', [AssetTransferController::class, 'show']);
+        Route::post('/{id}/approve', [AssetTransferController::class, 'approve']);
+        Route::post('/{id}/reject', [AssetTransferController::class, 'reject']);
+        Route::post('/{id}/cancel', [AssetTransferController::class, 'cancel']);
+    });
+
+    // Asset Maintenance
+    Route::prefix('asset-maintenance')->group(function () {
+        Route::get('/', [AssetMaintenanceController::class, 'index']);
+        Route::post('/', [AssetMaintenanceController::class, 'store']);
+        Route::get('/statistics', [AssetMaintenanceController::class, 'statistics']);
+        Route::get('/overdue', [AssetMaintenanceController::class, 'overdue']);
+        Route::get('/upcoming', [AssetMaintenanceController::class, 'upcoming']);
+        Route::get('/{id}', [AssetMaintenanceController::class, 'show']);
+        Route::put('/{id}', [AssetMaintenanceController::class, 'update']);
+        Route::post('/{id}/start', [AssetMaintenanceController::class, 'start']);
+        Route::post('/{id}/complete', [AssetMaintenanceController::class, 'complete']);
+        Route::post('/{id}/cancel', [AssetMaintenanceController::class, 'cancel']);
+    });
+
+    // Asset Checkouts
+    Route::prefix('asset-checkouts')->group(function () {
+        Route::get('/', [AssetCheckoutController::class, 'index']);
+        Route::post('/', [AssetCheckoutController::class, 'store']);
+        Route::get('/statistics', [AssetCheckoutController::class, 'statistics']);
+        Route::get('/overdue', [AssetCheckoutController::class, 'overdue']);
+        Route::get('/user/{userId}', [AssetCheckoutController::class, 'userCheckouts']);
+        Route::get('/{id}', [AssetCheckoutController::class, 'show']);
+        Route::post('/{id}/checkin', [AssetCheckoutController::class, 'checkin']);
+        Route::post('/{id}/extend', [AssetCheckoutController::class, 'extend']);
+        Route::post('/{id}/report-issue', [AssetCheckoutController::class, 'reportIssue']);
+    });
+
+    // Audit Logs
+    Route::prefix('audit-logs')->group(function () {
+        Route::get('/', [AuditLogController::class, 'index']);
+        Route::get('/statistics', [AuditLogController::class, 'statistics']);
+        Route::get('/recent', [AuditLogController::class, 'recentActivities']);
+        Route::get('/search', [AuditLogController::class, 'search']);
+        Route::get('/export', [AuditLogController::class, 'export']);
+        Route::get('/user/{userId}', [AuditLogController::class, 'userLogs']);
+        Route::get('/model/{modelType}/{modelId}', [AuditLogController::class, 'modelLogs']);
+        Route::get('/timeline/{modelType}/{modelId}', [AuditLogController::class, 'timeline']);
+        Route::get('/{id}', [AuditLogController::class, 'show']);
+        Route::get('/{id}/compare', [AuditLogController::class, 'compareChanges']);
+    });
 
 });
