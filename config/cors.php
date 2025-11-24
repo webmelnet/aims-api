@@ -20,6 +20,8 @@ return [
     'allowed_methods' => ['*'],
 
     'allowed_origins' => [
+        'http://api.13.251.128.163.sslip.io',
+        'http://app.13.251.128.163.sslip.io',
         env('FRONTEND_URL', 'http://localhost:3000')
     ],
 
